@@ -88,9 +88,11 @@ public interface ReplicatedLog extends AutoCloseable {
         Optional<OffsetAndEpoch> earliestSnapshotId = earliestSnapshotId();
         if (earliestSnapshotId.isPresent() &&
             ((offset < startOffset()) ||
-             (offset == startOffset() && epoch != earliestSnapshotId.get().epoch) ||
+             (offset == startOffset() && epoch != earliestSnapshotId.get().epoch) ||    //其实是从log start offset都发生diverging
              (epoch < earliestSnapshotId.get().epoch))
         ) {
+            //按照KIP-631里说的,系统会删除小于log start offset的snapShot
+            //所以说正常情况下，最早的snapShot就是等于logStartOffset的snapShot
             /* Send a snapshot if the leader has a snapshot at the log start offset and
              * 1. the fetch offset is less than the log start offset or
              * 2. the fetch offset is equal to the log start offset and last fetch epoch doesn't match

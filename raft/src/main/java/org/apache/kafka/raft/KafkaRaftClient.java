@@ -276,6 +276,7 @@ public class KafkaRaftClient<T> implements RaftClient<T> {
         final LogOffsetMetadata endOffsetMetadata = log.endOffset();
 
         if (state.updateLocalState(currentTimeMs, endOffsetMetadata)) {
+            //这里只是更新了leader的log endOffset，这个if条件不可能形成，因为必须同时更新一个follower才有可能更新highWaterMark
             onUpdateLeaderHighWatermark(state, currentTimeMs);
         }
 
@@ -954,12 +955,12 @@ public class KafkaRaftClient<T> implements RaftClient<T> {
             response.responses().get(0).partitions().get(0);
 
         if (partitionResponse.errorCode() != Errors.NONE.code()
-            || FetchResponse.recordsSize(partitionResponse) > 0
+            || FetchResponse.recordsSize(partitionResponse) > 0   //拉到数据了就立马返回
             || request.maxWaitMs() == 0) {
             return completedFuture(response);
         }
 
-        CompletableFuture<Long> future = fetchPurgatory.await(
+        CompletableFuture<Long> future = fetchPurgatory.await(  //没有拉到数据,等待leader append数据
             fetchPartition.fetchOffset(),
             request.maxWaitMs());
 
