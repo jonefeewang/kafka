@@ -122,8 +122,8 @@ final class KafkaMetadataLogTest {
     TestUtils.resource(log.createNewSnapshot(snapshotId).get()) { snapshot =>
       snapshot.freeze()
     }
-
-    assertEquals(0, log.readSnapshot(snapshotId).get().sizeInBytes())
+    val a=log.readSnapshot(snapshotId).get().sizeInBytes()
+    assertEquals(0, a)
   }
 
   @Test

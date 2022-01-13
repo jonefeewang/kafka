@@ -160,6 +160,7 @@ public class LeaderState<T> implements EpochState {
             // log will contain the largest record (in terms of epoch/offset) in any log
             // which ensures that any future leader will have replicated this record as well
             // as all records from previous epochs that the current leader has committed.
+            // (下边的判断必须是大于当期的epochStartOffset,不能是等于或小于)
 
             LogOffsetMetadata highWatermarkUpdateMetadata = highWatermarkUpdateOpt.get();
             long highWatermarkUpdateOffset = highWatermarkUpdateMetadata.offset;

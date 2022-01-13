@@ -1510,7 +1510,7 @@ public class KafkaRaftClient<T> implements RaftClient<T> {
             }
         } else if (leaderId.isPresent() && !quorum.hasLeader()) {
             // The request or response indicates the leader of the current epoch,
-            // which is currently unknown
+            // which is currently unknown(request /response已经知道了，但本机还不知道)
             transitionToFollower(epoch, leaderId.getAsInt(), currentTimeMs);
         }
     }

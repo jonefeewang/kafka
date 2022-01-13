@@ -296,6 +296,7 @@ class BrokerServer(
 
       if (!config.processRoles.contains(ControllerRole)) {
         // If no controller is defined, we rely on the broker to generate snapshots.
+        //身兼controller和broker双重角色
         metadataSnapshotter = Some(new BrokerMetadataSnapshotter(
           config.nodeId,
           time,

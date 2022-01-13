@@ -935,6 +935,7 @@ public final class QuorumController implements Controller {
                 // The active controller creates in-memory snapshot every time an uncommitted
                 // batch gets appended. The in-active controller can be more efficient and only
                 // create an in-memory snapshot when needed.
+                //在active controller的writeEvent里每次都调用getOrCreateSnapShot(参见controller writeEvent)，inActive只有需要生成时才调用
                 snapshotRegistry.getOrCreateSnapshot(lastCommittedOffset);
             }
 
