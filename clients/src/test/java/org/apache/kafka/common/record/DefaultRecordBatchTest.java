@@ -80,6 +80,8 @@ public class DefaultRecordBatchTest {
         builder.appendWithOffset(1234568, 2L, "b".getBytes(), "v".getBytes());
 
         MemoryRecords records = builder.build();
+        System.out.println("--build --"+records.buffer().limit()+"---byte buffer ..---"+records);
+        printByteBuffer(records.buffer());
         for (MutableRecordBatch batch : records.batches()) {
             assertTrue(batch.isValid());
             assertEquals(1234567, batch.baseOffset());
@@ -94,6 +96,23 @@ public class DefaultRecordBatchTest {
                 assertTrue(record.isValid());
             }
         }
+    }
+
+    void printByteBuffer(ByteBuffer buffer){
+        buffer.rewind();
+        StringBuffer sb = new StringBuffer();
+        System.out.println("whole buffer"+buffer);
+        int i=0;
+        while (buffer.hasRemaining()) {
+            sb.append(String.format("%02X ", buffer.get()));
+            i++;
+            if(i%10==0){
+                sb.append("\n");
+            }
+        }
+        System.out.println(sb);
+
+
     }
 
     @Test

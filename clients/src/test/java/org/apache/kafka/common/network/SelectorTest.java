@@ -164,7 +164,9 @@ public class SelectorTest {
         int responseCount = 0;
         for (int i = 0; i < conns; i++) {
             String node = Integer.toString(i);
-            selector.send(createSend(node, node + "-0"));
+            selector.send(createSend(node, node + "-00000"));
+            selector.send(createSend(node, node + "-01111"));
+            selector.send(createSend(node, node + "-02222"));
         }
 
         // loop until we complete all requests

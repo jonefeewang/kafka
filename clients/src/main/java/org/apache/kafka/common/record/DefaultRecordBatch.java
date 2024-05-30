@@ -466,8 +466,27 @@ public class DefaultRecordBatch extends AbstractRecordBatch implements MutableRe
         buffer.putInt(position + BASE_SEQUENCE_OFFSET, sequence);
         buffer.putInt(position + RECORDS_COUNT_OFFSET, numRecords);
         long crc = Crc32C.compute(buffer, ATTRIBUTES_OFFSET, sizeInBytes - ATTRIBUTES_OFFSET);
+        ByteBuffer buffer_clone = buffer.duplicate();
+        buffer_clone.position(ATTRIBUTES_OFFSET);
+        ByteBuffer crc_parts = buffer_clone.slice();
+        System.out.println("crc:" + crc);
+        printByteBuffer(crc_parts,sizeInBytes - ATTRIBUTES_OFFSET);
+
         buffer.putInt(position + CRC_OFFSET, (int) crc);
         buffer.position(position + RECORD_BATCH_OVERHEAD);
+    }
+
+   public static void printByteBuffer(ByteBuffer buffer,int limit){
+
+        StringBuffer sb = new StringBuffer();
+        System.out.println("crc_parts---"+limit+"---"+buffer);
+
+        for (int i=1;i<=limit;i++){
+            sb.append(String.format("%02X ", buffer.get()));
+        }
+        System.out.println(sb);
+
+
     }
 
     @Override
