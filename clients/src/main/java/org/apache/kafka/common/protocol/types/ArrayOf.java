@@ -16,12 +16,16 @@
  */
 package org.apache.kafka.common.protocol.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 
 /**
  * Represents a type for an array of a particular type
  */
 public class ArrayOf extends Type {
+    private static final Logger log = LoggerFactory.getLogger(ArrayOf.class);
 
     private final Type type;
     private final boolean nullable;
@@ -46,6 +50,8 @@ public class ArrayOf extends Type {
 
     @Override
     public void write(ByteBuffer buffer, Object o) {
+        log.trace("Writing array of type {} to buffer", o);
+
         if (o == null) {
             buffer.putInt(-1);
             return;
@@ -53,6 +59,7 @@ public class ArrayOf extends Type {
 
         Object[] objs = (Object[]) o;
         int size = objs.length;
+        log.trace("Writing array of type length {} ", size);
         buffer.putInt(size);
 
         for (Object obj : objs)

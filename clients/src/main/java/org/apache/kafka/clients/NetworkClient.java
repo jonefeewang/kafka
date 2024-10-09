@@ -386,7 +386,7 @@ public class NetworkClient implements KafkaClient {
         if (log.isDebugEnabled()) {
             int latestClientVersion = clientRequest.apiKey().latestVersion();
             if (header.apiVersion() == latestClientVersion) {
-                log.trace("Sending {} {} with correlation id {} to node {}", clientRequest.apiKey(), request,
+                log.trace("Sending {} {} {} with correlation id {} to node {}", clientRequest.apiKey(), request,header,
                         clientRequest.correlationId(), nodeId);
             } else {
                 log.debug("Using older server API v{} to send {} {} with correlation id {} to node {}",
@@ -558,6 +558,8 @@ public class NetworkClient implements KafkaClient {
         ApiKeys apiKey = ApiKeys.forId(requestHeader.apiKey());
         // Always expect the response version id to be the same as the request version id
         Struct responseBody = apiKey.parseResponse(requestHeader.apiVersion(), responseBuffer);
+        log.trace("Received {} response from node {} with correlation id {}",
+            apiKey, requestHeader.apiKey(), requestHeader.correlationId());
         correlate(requestHeader, responseHeader);
         if (throttleTimeSensor != null && responseBody.hasField(AbstractResponse.THROTTLE_TIME_KEY_NAME))
             throttleTimeSensor.record(responseBody.getInt(AbstractResponse.THROTTLE_TIME_KEY_NAME), now);
@@ -673,6 +675,9 @@ public class NetworkClient implements KafkaClient {
     private void handleApiVersionsResponse(List<ClientResponse> responses,
                                            InFlightRequest req, long now, ApiVersionsResponse apiVersionsResponse) {
         final String node = req.destination;
+        if (log.isDebugEnabled()) {
+            log.debug("handling api version response");
+        }
         if (apiVersionsResponse.error() != Errors.NONE) {
             if (req.request.version() == 0 || apiVersionsResponse.error() != Errors.UNSUPPORTED_VERSION) {
                 log.warn("Received error {} from node {} when making an ApiVersionsRequest with correlation id {}. Disconnecting.",
@@ -685,6 +690,7 @@ public class NetworkClient implements KafkaClient {
             return;
         }
         NodeApiVersions nodeVersionInfo = new NodeApiVersions(apiVersionsResponse.apiVersions());
+        System.out.println("api version response:"+apiVersionsResponse.apiVersions());
         apiVersions.update(node, nodeVersionInfo);
         this.connectionStates.ready(node);
         if (log.isDebugEnabled()) {

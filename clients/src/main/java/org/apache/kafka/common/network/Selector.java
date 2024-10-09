@@ -693,7 +693,7 @@ public class Selector implements Selectable, AutoCloseable {
 
         Deque<NetworkReceive> deque = stagedReceives.get(channel);
         deque.add(receive);
-        System.out.println("add to receive --- for channel:"+channel.id());
+        System.out.println("add to receive --- for channel:"+channel.id()+" with size :"+receive.payload().remaining());
     }
 
     /**

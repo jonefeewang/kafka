@@ -16,14 +16,20 @@
  */
 package org.apache.kafka.clients;
 
+import static org.junit.Assert.assertEquals;
+
+import java.nio.ByteBuffer;
+import java.util.Collections;
+import java.util.Properties;
+
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.Producer;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.protocol.ApiKeys;
 import org.apache.kafka.common.record.RecordBatch;
 import org.apache.kafka.common.requests.ApiVersionsResponse;
+import org.apache.kafka.common.requests.ResponseHeader;
 import org.junit.Test;
-
-import java.util.Collections;
-
-import static org.junit.Assert.assertEquals;
 
 public class ApiVersionsTest {
 
@@ -41,6 +47,38 @@ public class ApiVersionsTest {
 
         apiVersions.remove("1");
         assertEquals(RecordBatch.CURRENT_MAGIC_VALUE, apiVersions.maxUsableProduceMagic());
+    }
+
+    @Test
+    public void testSer() {
+        ResponseHeader header = new ResponseHeader(0);
+        ByteBuffer buffer = ByteBuffer.allocate(10);
+        header.toStruct().writeTo(buffer);
+        buffer.flip();
+        while (buffer.hasRemaining()) {
+            System.out.printf("-----%02X ", buffer.get());
+        }
+
+    }
+
+    @Test
+    public void testStoneMQ() {
+        Properties props = new Properties();
+        props.put("bootstrap.servers", "localhost:9092");
+        props.put("acks", "all");
+        props.put("retries", 0);
+        props.put("batch.size", 16384);
+        props.put("linger.ms", 1);
+        props.put("buffer.memory", 33554432);
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+        Producer<String, String> producer = new KafkaProducer<>(props);
+        for (int i = 0; i < 100; i++)
+            producer.send(new ProducerRecord<String, String>("topic_a", Integer.toString(i), Integer.toString(i)));
+
+        producer.close();
+
     }
 
 }

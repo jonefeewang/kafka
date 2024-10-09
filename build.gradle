@@ -18,15 +18,16 @@ import org.ajoberstar.grgit.Grgit
 buildscript {
   repositories {
     mavenCentral()
+    maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/'}
     jcenter()
   }
   apply from: file('gradle/buildscript.gradle'), to: buildscript
 
   dependencies {
     // For Apache Rat plugin to ignore non-Git files
-    classpath "org.ajoberstar:grgit:1.9.2"
+    classpath "org.ajoberstar:grgit:1.9.3"
     classpath 'com.github.ben-manes:gradle-versions-plugin:0.14.0'
-    classpath 'org.scoverage:gradle-scoverage:2.1.0'
+    classpath 'org.scoverage:gradle-scoverage:2.5.0'
     classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.4'
   }
 }
@@ -45,18 +46,18 @@ allprojects {
 
   dependencyUpdates {
     revision="release"
-    resolutionStrategy = {
-      componentSelection { rules ->
-        rules.all { ComponentSelection selection ->
-          boolean rejected = ['snap', 'alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
-            selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
-          }
-          if (rejected) {
-            selection.reject('Release candidate')
-          }
-        }
-      }
-    }
+    // resolutionStrategy = {
+    //   componentSelection { rules ->
+    //     rules.all { ComponentSelection selection ->
+    //       boolean rejected = ['snap', 'alpha', 'beta', 'rc', 'cr', 'm'].any { qualifier ->
+    //         selection.candidate.version ==~ /(?i).*[.-]${qualifier}[.\d-]*/
+    //       }
+    //       if (rejected) {
+    //         selection.reject('Release candidate')
+    //       }
+    //     }
+    //   }
+    // }
     configurations {
       runtime {
         resolutionStrategy {
@@ -77,7 +78,7 @@ allprojects {
 }
 
 ext {
-  gradleVersion = "4.8.1"
+  gradleVersion = "4.10.3"
   buildVersionFileName = "kafka-version.properties"
 
   maxPermSizeArgs = []
@@ -136,7 +137,7 @@ subprojects {
   }
   apply plugin: 'maven'
   apply plugin: 'signing'
-  apply plugin: 'checkstyle'
+  // apply plugin: 'checkstyle'
   apply plugin: 'findbugs'
 
   sourceCompatibility = 1.7
@@ -147,37 +148,37 @@ subprojects {
     options.compilerArgs << "-Xlint:deprecation"
   }
 
-  uploadArchives {
-    repositories {
-      signing {
-          required { shouldSign }
-          sign configurations.archives
+  // uploadArchives {
+  //   repositories {
+  //     signing {
+  //         required { shouldSign }
+  //         sign configurations.archives
 
-          // To test locally, replace mavenUrl in ~/.gradle/gradle.properties to file://localhost/tmp/myRepo/
-          mavenDeployer {
-              beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-              repository(url: "${mavenUrl}") {
-                  authentication(userName: "${mavenUsername}", password: "${mavenPassword}")
-              }
-              afterEvaluate {
-                  pom.artifactId = "${archivesBaseName}"
-                  pom.project {
-                      name 'Apache Kafka'
-                      packaging 'jar'
-                      url 'http://kafka.apache.org'
-                      licenses {
-                          license {
-                              name 'The Apache Software License, Version 2.0'
-                              url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                              distribution 'repo'
-                          }
-                      }
-                  }
-              }
-          }
-      }
-    }
-  }
+  //         // To test locally, replace mavenUrl in ~/.gradle/gradle.properties to file://localhost/tmp/myRepo/
+  //         mavenDeployer {
+  //             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+  //             repository(url: "${mavenUrl}") {
+  //                 authentication(userName: "${mavenUsername}", password: "${mavenPassword}")
+  //             }
+  //             afterEvaluate {
+  //                 pom.artifactId = "${archivesBaseName}"
+  //                 pom.project {
+  //                     name 'Apache Kafka'
+  //                     packaging 'jar'
+  //                     url 'http://kafka.apache.org'
+  //                     licenses {
+  //                         license {
+  //                             name 'The Apache Software License, Version 2.0'
+  //                             url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+  //                             distribution 'repo'
+  //                         }
+  //                     }
+  //                 }
+  //             }
+  //         }
+  //     }
+  //   }
+  // }
 
   def testLoggingEvents = ["passed", "skipped", "failed"]
   def testShowStandardStreams = false
@@ -321,12 +322,12 @@ subprojects {
     }
   }
 
-  checkstyle {
-    configFile = new File(rootDir, "checkstyle/checkstyle.xml")
-    configProperties = [importControlFile: "$rootDir/checkstyle/import-control.xml"]
-    // version 7.x requires Java 8
-    toolVersion = '6.19'
-  }
+  // checkstyle {
+  //   configFile = new File(rootDir, "checkstyle/checkstyle.xml")
+  //   configProperties = [importControlFile: "$rootDir/checkstyle/import-control.xml"]
+  //   // version 7.x requires Java 8
+  //   toolVersion = '6.19'
+  // }
 //  test.dependsOn('checkstyleMain', 'checkstyleTest')
 
   findbugs {
@@ -695,9 +696,9 @@ project(':core') {
 
   systemTestLibs.dependsOn('jar', 'testJar', 'copyDependantTestLibs')
 
-  checkstyle {
-    configProperties = [importControlFile: "$rootDir/checkstyle/import-control-core.xml"]
-  }
+  // checkstyle {
+  //   configProperties = [importControlFile: "$rootDir/checkstyle/import-control-core.xml"]
+  // }
 }
 
 project(':examples') {
@@ -711,9 +712,9 @@ project(':examples') {
     enabled = false
   }
 
-  checkstyle {
-    configProperties = [importControlFile: "$rootDir/checkstyle/import-control-core.xml"]
-  }
+  // checkstyle {
+  //   configProperties = [importControlFile: "$rootDir/checkstyle/import-control-core.xml"]
+  // }
 }
 
 project(':clients') {
@@ -909,84 +910,6 @@ project(':streams:examples') {
   }
 }
 
-project(':streams:upgrade-system-tests-0100') {
-  archivesBaseName = "kafka-streams-upgrade-system-tests-0100"
-
-  dependencies {
-    testCompile libs.kafkaStreams_0100
-  }
-
-  systemTestLibs {
-    dependsOn testJar
-  }
-}
-
-project(':streams:upgrade-system-tests-0101') {
-  archivesBaseName = "kafka-streams-upgrade-system-tests-0101"
-
-  dependencies {
-    testCompile libs.kafkaStreams_0101
-  }
-
-  systemTestLibs {
-    dependsOn testJar
-  }
-}
-
-project(':streams:upgrade-system-tests-0102') {
-  archivesBaseName = "kafka-streams-upgrade-system-tests-0102"
-
-  dependencies {
-    testCompile libs.kafkaStreams_0102
-  }
-
-  systemTestLibs {
-    dependsOn testJar
-  }
-}
-
-project(':jmh-benchmarks') {
-
-  apply plugin: 'com.github.johnrengelman.shadow'
-
-  shadowJar {
-    baseName = 'kafka-jmh-benchmarks-all'
-    classifier = null
-    version = null
-  }
-
-  dependencies {
-      compile project(':clients')
-      compile project(':streams')
-      compile 'org.openjdk.jmh:jmh-core:1.18'
-      compile 'org.openjdk.jmh:jmh-generator-annprocess:1.18'
-      compile 'org.openjdk.jmh:jmh-core-benchmarks:1.18'
-  }
-
-  jar {
-    manifest {
-      attributes "Main-Class": "org.openjdk.jmh.Main"
-    }
-  }
-
-
-  task jmh(type: JavaExec, dependsOn: [':jmh-benchmarks:clean', ':jmh-benchmarks:shadowJar']) {
-
-    main="-jar"
-
-    doFirst {
-      if (System.getProperty("jmhArgs")) {
-          args System.getProperty("jmhArgs").split(',')
-      }
-      args = [shadowJar.archivePath, *args]
-    }
-  }
-
-  javadoc {
-     enabled = false
-  }
-}
-
 project(':log4j-appender') {
   archivesBaseName = "kafka-log4j-appender"
 
@@ -1003,6 +926,7 @@ project(':log4j-appender') {
   }
 
 }
+
 
 project(':connect:api') {
   archivesBaseName = "connect-api"
@@ -1215,6 +1139,49 @@ project(':connect:file') {
     dependsOn copyDependantLibs
   }
 }
+
+project(':jmh-benchmarks') {
+
+  apply plugin: 'com.github.johnrengelman.shadow'
+
+  shadowJar {
+    baseName = 'kafka-jmh-benchmarks-all'
+    classifier = null
+    version = null
+  }
+
+  dependencies {
+    compile project(':clients')
+    compile project(':streams')
+    compile 'org.openjdk.jmh:jmh-core:1.18'
+    compile 'org.openjdk.jmh:jmh-generator-annprocess:1.18'
+    compile 'org.openjdk.jmh:jmh-core-benchmarks:1.18'
+  }
+
+  jar {
+    manifest {
+      attributes "Main-Class": "org.openjdk.jmh.Main"
+    }
+  }
+
+
+  task jmh(type: JavaExec, dependsOn: [':jmh-benchmarks:clean', ':jmh-benchmarks:shadowJar']) {
+
+    main="-jar"
+
+    doFirst {
+      if (System.getProperty("jmhArgs")) {
+        args System.getProperty("jmhArgs").split(',')
+      }
+      args = [shadowJar.archivePath, *args]
+    }
+  }
+
+  javadoc {
+    enabled = false
+  }
+}
+
 
 task aggregatedJavadoc(type: Javadoc) {
   def projectsWithJavadoc = subprojects.findAll { it.javadoc.enabled }

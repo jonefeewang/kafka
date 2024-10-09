@@ -83,12 +83,14 @@ public class NetworkReceive implements Receive {
         int read = 0;
         if (size.hasRemaining()) {
             int bytesRead = channel.read(size);
+            System.out.println("read ... " + bytesRead);
             if (bytesRead < 0)
                 throw new EOFException();
             read += bytesRead;
             if (!size.hasRemaining()) {
                 size.rewind();
                 int receiveSize = size.getInt();
+                System.out.println("receiveSize ... " + receiveSize);
                 if (receiveSize < 0)
                     throw new InvalidReceiveException("Invalid receive (size = " + receiveSize + ")");
                 if (maxSize != UNLIMITED && receiveSize > maxSize)
@@ -99,6 +101,7 @@ public class NetworkReceive implements Receive {
         }
         if (buffer != null) {
             int bytesRead = channel.read(buffer);
+            System.out.println("read ...222 " + bytesRead);
             if (bytesRead < 0)
                 throw new EOFException();
             read += bytesRead;

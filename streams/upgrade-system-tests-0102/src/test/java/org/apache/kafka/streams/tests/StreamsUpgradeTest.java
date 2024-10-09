@@ -16,16 +16,9 @@
  */
 package org.apache.kafka.streams.tests;
 
-import org.apache.kafka.streams.KafkaStreams;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.kstream.KStream;
-import org.apache.kafka.streams.kstream.KStreamBuilder;
-import org.apache.kafka.streams.processor.AbstractProcessor;
-import org.apache.kafka.streams.processor.Processor;
-import org.apache.kafka.streams.processor.ProcessorContext;
-import org.apache.kafka.streams.processor.ProcessorSupplier;
-
 import java.util.Properties;
+
+import javax.annotation.processing.AbstractProcessor;
 
 public class StreamsUpgradeTest {
 
@@ -35,8 +28,10 @@ public class StreamsUpgradeTest {
     @SuppressWarnings("unchecked")
     public static void main(final String[] args) {
         if (args.length < 2) {
-            System.err.println("StreamsUpgradeTest requires three argument (kafka-url, state-dir, [upgradeFrom: optional]) but only " + args.length + " provided: "
-                + (args.length > 0 ? args[0] : ""));
+            System.err.println(
+                    "StreamsUpgradeTest requires three argument (kafka-url, state-dir, [upgradeFrom: optional]) but only "
+                            + args.length + " provided: "
+                            + (args.length > 0 ? args[0] : ""));
         }
         final String kafka = args[0];
         final String stateDir = args[1];
@@ -58,8 +53,9 @@ public class StreamsUpgradeTest {
         config.setProperty(StreamsConfig.STATE_DIR_CONFIG, stateDir);
         config.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
         if (upgradeFrom != null) {
-            // TODO: because Kafka 0.10.2.2 is not released yet, thus `UPGRADE_FROM_CONFIG` is not available yet
-            //config.setProperty(StreamsConfig.UPGRADE_FROM_CONFIG, upgradeFrom);
+            // TODO: because Kafka 0.10.2.2 is not released yet, thus `UPGRADE_FROM_CONFIG`
+            // is not available yet
+            // config.setProperty(StreamsConfig.UPGRADE_FROM_CONFIG, upgradeFrom);
             config.setProperty("upgrade.from", upgradeFrom);
         }
 
@@ -97,10 +93,12 @@ public class StreamsUpgradeTest {
                     }
 
                     @Override
-                    public void punctuate(final long timestamp) {}
+                    public void punctuate(final long timestamp) {
+                    }
 
                     @Override
-                    public void close() {}
+                    public void close() {
+                    }
                 };
             }
         };

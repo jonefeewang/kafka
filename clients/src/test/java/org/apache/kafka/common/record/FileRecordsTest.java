@@ -16,6 +16,7 @@
  */
 package org.apache.kafka.common.record;
 
+import net.bytebuddy.dynamic.scaffold.TypeWriter;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.utils.Utils;
 import org.apache.kafka.test.TestUtils;
@@ -90,7 +91,9 @@ public class FileRecordsTest {
         Iterator<Record> records = fileRecords.records().iterator();
         for (byte[] value : values) {
             assertTrue(records.hasNext());
-            assertEquals(records.next().value(), ByteBuffer.wrap(value));
+            Record record = records.next();
+            System.out.println("---"+record);
+            assertEquals(record.value(), ByteBuffer.wrap(value));
         }
     }
 

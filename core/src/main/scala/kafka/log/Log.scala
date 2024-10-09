@@ -905,6 +905,7 @@ class Log(@volatile var dir: File,
 
     // Because we don't use lock for reading, the synchronization is a little bit tricky.
     // We create the local variables to avoid race conditions with updates to the log.
+    // 这里它的意思是使用了一个局部变量，而不是线程安全的变量，所以读取的可能是一个旧的数据，不过对于消息队列的读取消费来说问题不大
     val currentNextOffsetMetadata = nextOffsetMetadata
     val next = currentNextOffsetMetadata.messageOffset
     if (startOffset == next) {

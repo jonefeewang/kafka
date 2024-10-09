@@ -16,6 +16,11 @@
  */
 package org.apache.kafka.connect.file;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.kafka.common.config.ConfigDef;
 import org.apache.kafka.common.config.ConfigDef.Importance;
 import org.apache.kafka.common.config.ConfigDef.Type;
@@ -23,20 +28,16 @@ import org.apache.kafka.common.utils.AppInfoParser;
 import org.apache.kafka.connect.connector.Task;
 import org.apache.kafka.connect.sink.SinkConnector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
- * Very simple connector that works with the console. This connector supports both source and
+ * Very simple connector that works with the console. This connector supports
+ * both source and
  * sink modes via its 'mode' setting.
  */
 public class FileStreamSinkConnector extends SinkConnector {
 
     public static final String FILE_CONFIG = "file";
     private static final ConfigDef CONFIG_DEF = new ConfigDef()
-        .define(FILE_CONFIG, Type.STRING, Importance.HIGH, "Destination filename.");
+            .define(FILE_CONFIG, Type.STRING, Importance.HIGH, "Destination filename.");
 
     private String filename;
 

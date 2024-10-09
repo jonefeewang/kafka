@@ -16,6 +16,10 @@
  */
 package org.apache.kafka.common.protocol.types;
 
+import org.apache.kafka.clients.NetworkClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +28,7 @@ import java.util.Map;
  * The schema for a compound record definition
  */
 public class Schema extends Type {
+    private static final Logger log = LoggerFactory.getLogger(Schema.class);
 
     private final Field[] fields;
     private final Map<String, Field> fieldsByName;
@@ -55,6 +60,7 @@ public class Schema extends Type {
             try {
                 Object value = field.type().validate(r.get(field));
                 field.type.write(buffer, value);
+                log.trace("Wrote field {} with value {}", field.name, value);
             } catch (Exception e) {
                 throw new SchemaException("Error writing field '" + field.name + "': " +
                                           (e.getMessage() == null ? e.getClass().getName() : e.getMessage()));

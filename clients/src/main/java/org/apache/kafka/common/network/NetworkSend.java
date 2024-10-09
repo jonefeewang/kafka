@@ -16,15 +16,24 @@
  */
 package org.apache.kafka.common.network;
 
+import org.apache.kafka.clients.NetworkClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.nio.ByteBuffer;
 
 /**
  * A size delimited Send that consists of a 4 byte network-ordered size N followed by N bytes of content
  */
 public class NetworkSend extends ByteBufferSend {
-
+    private static final Logger log = LoggerFactory.getLogger(NetworkSend.class);
     public NetworkSend(String destination, ByteBuffer buffer) {
         super(destination, sizeDelimit(buffer));
+        log.trace("Created a new NetworkSend for destination {} with {} bytes of data", destination, buffer.remaining());
+//        while (buffer.hasRemaining()){
+//            log.trace(String.format("{%02X} ", buffer.get()));
+//        }
+//        buffer.rewind();
     }
 
     private static ByteBuffer[] sizeDelimit(ByteBuffer buffer) {
