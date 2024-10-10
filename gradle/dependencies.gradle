@@ -29,7 +29,7 @@ ext {
 }
 
 // Add Scala version
-def defaultScala211Version = '2.11.11'
+def defaultScala211Version = '2.11.12'
 def defaultScala212Version = '2.12.2'
 if (hasProperty('scalaVersion')) {
   if (scalaVersion == '2.11') {
@@ -76,6 +76,9 @@ versions += [
   zookeeper: "3.4.10",
   jfreechart: "1.0.0",
   mavenArtifact: "3.5.0",
+  "jaxb-api": "2.3.0",
+  "jaxb-core": "2.3.0",
+  "jaxb-impl": "2.3.0"
 ]
 
 libs += [
@@ -121,5 +124,9 @@ libs += [
   zkclient: "com.101tec:zkclient:$versions.zkclient",
   zookeeper: "org.apache.zookeeper:zookeeper:$versions.zookeeper",
   jfreechart: "jfreechart:jfreechart:$versions.jfreechart",
-  mavenArtifact: "org.apache.maven:maven-artifact:$versions.mavenArtifact"
+  mavenArtifact: "org.apache.maven:maven-artifact:$versions.mavenArtifact",
+  "jaxb-api": "javax.xml.bind:jaxb-api:2.3.0",
+  "jaxb-core": "com.sun.xml.bind:jaxb-core:2.3.0",
+  "jaxb-impl": "com.sun.xml.bind:jaxb-impl:2.3.0"
+
 ]
