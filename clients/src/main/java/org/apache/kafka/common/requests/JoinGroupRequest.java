@@ -16,15 +16,15 @@
  */
 package org.apache.kafka.common.requests;
 
-import org.apache.kafka.common.protocol.ApiKeys;
-import org.apache.kafka.common.protocol.Errors;
-import org.apache.kafka.common.protocol.types.Struct;
-import org.apache.kafka.common.utils.Utils;
-
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.apache.kafka.common.protocol.ApiKeys;
+import org.apache.kafka.common.protocol.Errors;
+import org.apache.kafka.common.protocol.types.Struct;
+import org.apache.kafka.common.utils.Utils;
 
 public class JoinGroupRequest extends AbstractRequest {
     private static final String GROUP_ID_KEY_NAME = "group_id";
@@ -71,7 +71,7 @@ public class JoinGroupRequest extends AbstractRequest {
         private final List<ProtocolMetadata> groupProtocols;
         private int rebalanceTimeout = 0;
 
-        public Builder(String groupId, int sessionTimeout, String memberId,
+                public Builder(String groupId, int sessionTimeout, String memberId,
                        String protocolType, List<ProtocolMetadata> groupProtocols) {
             super(ApiKeys.JOIN_GROUP);
             this.groupId = groupId;

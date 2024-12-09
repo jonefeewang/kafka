@@ -1,3 +1,14 @@
 {
     "java.configuration.updateBuildConfiguration": "automatic",
+    "files.watcherExclude": {
+        "**/target": true
+    },
+    // "liveServer.settings.useLocalIp": true,
+    // "liveServer.settings.donotShowInfoMsg": true,
+    // "liveServer.settings.NoBrowser": true,
+    // "liveServer.settings.proxy": {
+    //     "enable": true,
+    //     "baseUri": "/",
+    //     "proxyUri": "http://127.0.0.1:8080"
+    // }
 }

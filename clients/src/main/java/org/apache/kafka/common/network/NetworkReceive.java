@@ -16,6 +16,9 @@
  */
 package org.apache.kafka.common.network;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -26,6 +29,8 @@ import java.nio.channels.ScatteringByteChannel;
  * A size delimited Receive that consists of a 4 byte network-ordered size N followed by N bytes of content
  */
 public class NetworkReceive implements Receive {
+
+    private static final Logger log = LoggerFactory.getLogger(NetworkReceive.class);
 
     public final static String UNKNOWN_SOURCE = "";
     public final static int UNLIMITED = -1;
@@ -83,14 +88,14 @@ public class NetworkReceive implements Receive {
         int read = 0;
         if (size.hasRemaining()) {
             int bytesRead = channel.read(size);
-            System.out.println("read ... " + bytesRead);
+            log.debug("read ... " + bytesRead);
             if (bytesRead < 0)
                 throw new EOFException();
             read += bytesRead;
             if (!size.hasRemaining()) {
                 size.rewind();
                 int receiveSize = size.getInt();
-                System.out.println("receiveSize ... " + receiveSize);
+               log.debug("receiveSize ... " + receiveSize);
                 if (receiveSize < 0)
                     throw new InvalidReceiveException("Invalid receive (size = " + receiveSize + ")");
                 if (maxSize != UNLIMITED && receiveSize > maxSize)
@@ -101,7 +106,7 @@ public class NetworkReceive implements Receive {
         }
         if (buffer != null) {
             int bytesRead = channel.read(buffer);
-            System.out.println("read ...222 " + bytesRead);
+            log.debug("read ...222 " + bytesRead);
             if (bytesRead < 0)
                 throw new EOFException();
             read += bytesRead;

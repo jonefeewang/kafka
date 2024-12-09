@@ -16,12 +16,15 @@
  */
 package org.apache.kafka.common.record;
 
+import org.apache.kafka.clients.producer.internals.RecordAccumulator;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.utils.ByteBufferOutputStream;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.CloseableIterator;
 import org.apache.kafka.common.utils.Crc32C;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataInputStream;
 import java.io.EOFException;
@@ -94,6 +97,7 @@ import static org.apache.kafka.common.record.Records.LOG_OVERHEAD;
  *  -------------------------------------------------------------------------------------------------
  */
 public class DefaultRecordBatch extends AbstractRecordBatch implements MutableRecordBatch {
+    private static final Logger log = LoggerFactory.getLogger(DefaultRecordBatch.class);
     static final int BASE_OFFSET_OFFSET = 0;
     static final int BASE_OFFSET_LENGTH = 8;
     static final int LENGTH_OFFSET = BASE_OFFSET_OFFSET + BASE_OFFSET_LENGTH;
@@ -469,8 +473,8 @@ public class DefaultRecordBatch extends AbstractRecordBatch implements MutableRe
         ByteBuffer buffer_clone = buffer.duplicate();
         buffer_clone.position(ATTRIBUTES_OFFSET);
         ByteBuffer crc_parts = buffer_clone.slice();
-        System.out.println("crc:" + crc);
-        printByteBuffer(crc_parts,sizeInBytes - ATTRIBUTES_OFFSET);
+        //log.debug("crc:{}", crc);
+        //printByteBuffer(crc_parts,sizeInBytes - ATTRIBUTES_OFFSET);
 
         buffer.putInt(position + CRC_OFFSET, (int) crc);
         buffer.position(position + RECORD_BATCH_OVERHEAD);

@@ -22,4 +22,6 @@ defaultTasks 'downloadWrapper'
 task downloadWrapper(type: Wrapper) {
     description = "Download the gradle wrapper and requisite files. Overwrites existing wrapper files."
     gradleVersion = project.gradleVersion
+    distributionUrl = "https://services.gradle.org/distributions/gradle-${gradleVersion}-bin.zip"
+    validateDistributionUrl = true
 }

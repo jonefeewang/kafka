@@ -16,10 +16,13 @@
  */
 package org.apache.kafka.common.record;
 
+import org.apache.kafka.clients.producer.internals.RecordAccumulator;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.protocol.types.Struct;
 import org.apache.kafka.common.utils.ByteBufferOutputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -38,6 +41,8 @@ import static org.apache.kafka.common.utils.Utils.wrapNullable;
  */
 public class MemoryRecordsBuilder {
     private static final float COMPRESSION_RATE_ESTIMATION_FACTOR = 1.05f;
+
+    private static final Logger log = LoggerFactory.getLogger(MemoryRecordsBuilder.class);
 
     private final TimestampType timestampType;
     private final CompressionType compressionType;

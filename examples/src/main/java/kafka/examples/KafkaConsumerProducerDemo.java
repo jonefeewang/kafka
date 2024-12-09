@@ -16,14 +16,33 @@
  */
 package kafka.examples;
 
+import java.io.IOException;
+
 public class KafkaConsumerProducerDemo {
     public static void main(String[] args) {
-        boolean isAsync = args.length == 0 || !args[0].trim().equalsIgnoreCase("sync");
-        Producer producerThread = new Producer(KafkaProperties.TOPIC, isAsync);
-        producerThread.start();
-
-        Consumer consumerThread = new Consumer(KafkaProperties.TOPIC);
+        final Consumer consumerThread = new Consumer(KafkaProperties.TOPIC, "consumer_id111");
         consumerThread.start();
+        
+//        // 添加关闭钩子
+//        Runtime.getRuntime().addShutdownHook(new Thread() {
+//            @Override
+//            public void run() {
+//                try {
+//                    consumerThread.join();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+//
+//        // 等待用户输入来退出
+//        try {
+//            System.out.println("Press enter to exit");
+//            System.in.read();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
 
     }
 }

@@ -53,7 +53,7 @@ public class RangeAssignor extends AbstractPartitionAssignor {
                 put(res, topic, consumerId);
         }
         return res;
-    }
+        }
 
     @Override
     public Map<String, List<TopicPartition>> assign(Map<String, Integer> partitionsPerTopic,

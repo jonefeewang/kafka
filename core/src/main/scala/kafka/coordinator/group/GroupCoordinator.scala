@@ -270,7 +270,7 @@ class GroupCoordinator(val brokerId: Int,
             if (memberId == group.leaderId) {
               info(s"Assignment received from leader for group ${group.groupId} for generation ${group.generationId}")
 
-              // fill any missing members with an empty assignment
+                // fill any missing members with an empty assignment
               val missing = group.allMembers -- groupAssignment.keySet
               val assignment = groupAssignment ++ missing.map(_ -> Array.empty[Byte]).toMap
 

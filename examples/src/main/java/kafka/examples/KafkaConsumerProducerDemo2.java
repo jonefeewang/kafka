@@ -16,15 +16,19 @@
  */
 package kafka.examples;
 
-public class KafkaProperties {
-    public static final String TOPIC = "topic_a";
-    public static final String KAFKA_SERVER_URL = "localhost";
-    public static final int KAFKA_SERVER_PORT = 9092;
-    public static final int KAFKA_PRODUCER_BUFFER_SIZE = 64 * 1024;
-    public static final int CONNECTION_TIMEOUT = 100000;
-    public static final String TOPIC2 = "topic2";
-    public static final String TOPIC3 = "topic3";
-    public static final String CLIENT_ID = "SimpleConsumerDemoClient";
+public class KafkaConsumerProducerDemo2 {
+    public static void main(String[] args) {
+        boolean isAsync = args.length == 0 || !args[0].trim().equalsIgnoreCase("sync");
+//        Producer producerThread = new Producer(KafkaProperties.TOPIC, isAsync);
+//        producerThread.start();
 
-    private KafkaProperties() {}
+        Consumer consumerThread = new Consumer(KafkaProperties.TOPIC,"consumer_id222");
+        consumerThread.start();
+        try {
+            Thread.sleep(10*1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
 }

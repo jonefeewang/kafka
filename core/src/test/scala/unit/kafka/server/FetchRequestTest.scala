@@ -78,7 +78,7 @@ class FetchRequestTest extends BaseRequestTest {
 
     val messagesPerPartition = 9
     val maxResponseBytes = 800
-    val maxPartitionBytes = 190
+    val maxPartitionBytes = 111
 
     def createFetchRequest(topicPartitions: Seq[TopicPartition], offsetMap: Map[TopicPartition, Long] = Map.empty): FetchRequest =
       this.createFetchRequest(maxResponseBytes, maxPartitionBytes, topicPartitions, offsetMap)

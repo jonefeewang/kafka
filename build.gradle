@@ -18,8 +18,8 @@
 buildscript {
   repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
     maven{ url 'https://maven.aliyun.com/nexus/content/groups/public/'}
-    jcenter()
   }
   apply from: file('gradle/buildscript.gradle'), to: buildscript
 
@@ -34,9 +34,18 @@ buildscript {
 
 apply from: "$rootDir/gradle/dependencies.gradle"
 
+
 allprojects {
-  // apply plugin: 'idea'
+  apply plugin: 'idea'
+  apply plugin: 'java'
   // apply plugin: "jacoco"
+
+  java {
+    toolchain {
+      languageVersion = JavaLanguageVersion.of(8) // 使用 JDK 8
+    }
+  }
+
 
   repositories {
     mavenCentral()
@@ -710,7 +719,7 @@ project(':core') {
                                'genAdminClientConfigDocs', 'genProducerConfigDocs', 'genConsumerConfigDocs',
                                'genKafkaConfigDocs', 'genTopicConfigDocs',
                                ':connect:runtime:genConnectConfigDocs', ':connect:runtime:genConnectTransformationDocs',
-                               ':streams:genStreamsConfigDocs', 'genConsumerMetricsDocs'], type: Tar) {
+                               'genConsumerMetricsDocs'], type: Tar) {
     // classifier = 'site-docs'
     archiveClassifier.set('site-docs')
     compression = Compression.GZIP
@@ -782,6 +791,18 @@ project(':core') {
      implementation project(":core")
      implementation project(":log4j-appender")
      implementation libs.scala
+     implementation libs.slf4jlog4j
+     implementation libs.javafaker
+//     testImplementation 'org.yaml:snakeyaml:2.0'
+//
+//
+//
+     testImplementation libs.javafaker
+//     testImplementation libs.snakeyaml
+//
+//     testRuntimeOnly libs.javafaker
+//     testRuntimeOnly libs.snakeyaml
+
    }
 
    javadoc {
@@ -806,6 +827,9 @@ project(':clients') {
     implementation libs."jaxb-api"
     implementation libs."jaxb-core"
     implementation libs."jaxb-impl"
+
+    testImplementation libs.javafaker
+//    testImplementation 'org.yaml:snakeyaml:2.0'
 
     testImplementation libs.bcpkix
     testImplementation libs.junit

@@ -57,9 +57,9 @@ public class ResponseHeader extends AbstractRequestResponse {
     }
 
     public static ResponseHeader parse(ByteBuffer buffer) {
-        while (buffer.hasRemaining()){
-            System.out.printf("-----%02X ", buffer.get());
-        }
+//        while (buffer.hasRemaining()){
+//            System.out.printf("-----%02X ", buffer.get());
+//        }
         buffer.rewind();
         return new ResponseHeader(Protocol.RESPONSE_HEADER.read(buffer));
     }

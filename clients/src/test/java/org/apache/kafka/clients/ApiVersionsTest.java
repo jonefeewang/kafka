@@ -20,8 +20,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.nio.ByteBuffer;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Properties;
 
+
+import com.azul.crs.json.DummyJSONSerializer;
+
+
+import com.github.javafaker.Faker;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -73,12 +79,53 @@ public class ApiVersionsTest {
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
 
+        Faker faker = new Faker(Locale.CHINA);
+
+
+
+
+
         Producer<String, String> producer = new KafkaProducer<>(props);
-        for (int i = 0; i < 100; i++)
-            producer.send(new ProducerRecord<String, String>("topic_a", Integer.toString(i), Integer.toString(i)));
+        for (int i = 0; i < 500; i++) {
+            long userId=faker.number().randomNumber();
+            long orderId=faker.number().randomNumber();
+            long productId=faker.number().randomNumber();
+            String userName=faker.name().username();
+            String address=faker.address().fullAddress();
+            Order order=new Order(userId,orderId,productId,userName,address);
+            DummyJSONSerializer serializer= new DummyJSONSerializer();
+            String msg_value= serializer.serialize(order);
+            int size=0; boolean simple=true;
+
+            if(simple){
+                size=1;
+            }
+            else
+                size=msg_value.length()+1;
+            StringBuilder builder=new StringBuilder(size);
+            builder.append(i);
+//            builder.append("-");
+//            builder.append(msg_value);
+            producer.send(new ProducerRecord<String, String>("topic_a",builder.toString()));
+        }
 
         producer.close();
 
+    }
+    private class Order{
+        long userId;
+        long orderId;
+        long productId;
+        String username;
+        String address;
+
+        public Order(long userId,long orderId,long productId,String username,String address){
+            this.userId=userId;
+            this.orderId=orderId;
+            this.productId=productId;
+            this.username=username;
+            this.address = address;
+        }
     }
 
 }

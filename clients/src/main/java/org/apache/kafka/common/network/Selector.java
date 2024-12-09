@@ -346,7 +346,7 @@ public class Selector implements Selectable, AutoCloseable {
         // channels with completed receives until all staged receives are completed.
         addToCompletedReceives();
 
-        System.out.println("poll ended ....");
+        //System.out.println("poll ended ....");
     }
 
     void pollSelectionKeys(Iterable<SelectionKey> selectionKeys,
@@ -693,7 +693,7 @@ public class Selector implements Selectable, AutoCloseable {
 
         Deque<NetworkReceive> deque = stagedReceives.get(channel);
         deque.add(receive);
-        System.out.println("add to receive --- for channel:"+channel.id()+" with size :"+receive.payload().remaining());
+       // System.out.println("add to receive --- for channel:"+channel.id()+" with size :"+receive.payload().remaining());
     }
 
     /**
@@ -718,7 +718,7 @@ public class Selector implements Selectable, AutoCloseable {
     private void addToCompletedReceives(KafkaChannel channel, Deque<NetworkReceive> stagedDeque) {
         NetworkReceive networkReceive = stagedDeque.poll();
         this.completedReceives.add(networkReceive);
-        System.out.println("add to completed .."+channel.id());
+       // System.out.println("add to completed .."+channel.id());
         this.sensors.recordBytesReceived(channel.id(), networkReceive.payload().limit());
     }
 
