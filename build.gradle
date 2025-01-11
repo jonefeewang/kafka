@@ -1083,6 +1083,7 @@ project(':examples') {
 
   dependencies {
     compile project(':core')
+    compile libs.slf4jlog4j
   }
 
   javadoc {

@@ -22,21 +22,22 @@ import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public class KafkaConsumerProducerDemo {
+public class KafkaConsumerDemo {
     public static void main(String[] args) throws InterruptedException {
-        boolean isAsync = args.length == 0 || !args[0].trim().equalsIgnoreCase("sync");
-        CountDownLatch latch = new CountDownLatch(2);
-        Producer producerThread = new Producer(KafkaProperties.TOPIC, isAsync, null, false, 10000, -1, latch);
-        producerThread.start();
+//        boolean isAsync = args.length == 0 || !args[0].trim().equalsIgnoreCase("sync");
+        boolean isAsync=false;
+        CountDownLatch latch = new CountDownLatch(1);
+//        Producer producerThread = new Producer(KafkaProperties.TOPIC, isAsync, null, false, 10, -1, latch);
+//        producerThread.start();
 
         Consumer consumerThread = new Consumer(KafkaProperties.TOPIC, "DemoConsumer", Optional.empty(), false, 10000, latch);
         consumerThread.start();
 
-        if (!latch.await(5, TimeUnit.MINUTES)) {
+        if (!latch.await(1, TimeUnit.MINUTES)) {
             throw new TimeoutException("Timeout after 5 minutes waiting for demo producer and consumer to finish");
         }
 
-        consumerThread.shutdown();
+//        consumerThread.shutdown();
         System.out.println("All finished!");
     }
 }
